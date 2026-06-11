@@ -14,6 +14,21 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                // Oranye UNM (#F77F00) + turunannya
+                unm: {
+                    50: '#FFF6EA',
+                    100: '#FFE7C7',
+                    200: '#FFD095',
+                    300: '#FFB45C',
+                    400: '#FF9A2E',
+                    500: '#F77F00',
+                    600: '#DD7200',
+                    700: '#B85F00',
+                    800: '#8F4A00',
+                    900: '#6B3700',
+                },
+            },
         },
     },
 

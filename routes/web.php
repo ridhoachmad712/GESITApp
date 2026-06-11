@@ -1,12 +1,11 @@
 <?php
 
 use App\Http\Controllers\DocumentAccessController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Akses file dokumen — tanpa middleware auth karena dokumen public boleh
 // diunduh pengunjung; otorisasi per dokumen ditangani DocumentPolicy.

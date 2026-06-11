@@ -36,6 +36,7 @@ class AppearanceSettings extends Page implements HasForms
             'site_tagline' => Setting::get('site_tagline'),
             'site_owner' => Setting::get('site_owner'),
             'primary_color' => Setting::get('primary_color'),
+            'logo_path' => Setting::get('logo_path'),
         ]);
     }
 
@@ -60,6 +61,13 @@ class AppearanceSettings extends Page implements HasForms
                             ->required()
                             ->maxLength(120)
                             ->helperText('Mis. nama program studi/fakultas. Tampil di bawah nama situs dan hak cipta footer.'),
+                        Forms\Components\FileUpload::make('logo_path')
+                            ->label('Logo')
+                            ->image()
+                            ->disk('public')
+                            ->directory('logo')
+                            ->maxSize(1024)
+                            ->helperText('Opsional, PNG/JPG/SVG maks 1 MB. Jika kosong, dipakai kotak inisial nama situs.'),
                     ])
                     ->columns(1),
 
@@ -81,6 +89,8 @@ class AppearanceSettings extends Page implements HasForms
         foreach (['site_name', 'site_tagline', 'site_owner', 'primary_color'] as $key) {
             Setting::set($key, $data[$key]);
         }
+
+        Setting::set('logo_path', $data['logo_path'] ?: null);
 
         Notification::make()
             ->success()

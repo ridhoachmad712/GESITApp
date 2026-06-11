@@ -20,6 +20,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -32,6 +33,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName(fn (): string => Setting::get('site_name').' — Panel Admin')
+            ->brandLogo(fn (): ?string => Setting::get('logo_path')
+                ? Storage::disk('public')->url(Setting::get('logo_path'))
+                : null)
+            ->brandLogoHeight('2.25rem')
             ->colors(fn (): array => [
                 // Warna dasar dari Pengaturan Tampilan
                 'primary' => Color::hex(Setting::get('primary_color') ?? '#1E3A8A'),

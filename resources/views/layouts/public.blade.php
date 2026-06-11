@@ -7,6 +7,7 @@
         $siteName = \App\Models\Setting::get('site_name');
         $siteTagline = \App\Models\Setting::get('site_tagline');
         $siteOwner = \App\Models\Setting::get('site_owner');
+        $siteLogo = \App\Models\Setting::get('logo_path');
     @endphp
     <title>@hasSection('title')@yield('title') — {{ $siteName }}@else{{ $siteName }} — {{ $siteTagline }}@endif</title>
     <meta name="description" content="@yield('meta_description', $siteName.' — '.$siteTagline.', arsip digital '.$siteOwner.'.')">
@@ -23,7 +24,11 @@
     <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur" x-data="{ open: false }">
         <nav class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
             <a href="{{ route('home') }}" class="flex items-center gap-3">
-                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-unm-500 text-lg font-bold text-white">{{ Str::upper(Str::substr($siteName, 0, 2)) }}</span>
+                @if ($siteLogo)
+                    <img src="{{ Storage::disk('public')->url($siteLogo) }}" alt="Logo {{ $siteName }}" class="h-10 w-10 rounded-lg object-contain">
+                @else
+                    <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-unm-500 text-lg font-bold text-white">{{ Str::upper(Str::substr($siteName, 0, 2)) }}</span>
+                @endif
                 <span class="leading-tight">
                     <span class="block text-sm font-bold sm:text-base">{{ $siteName }}</span>
                     <span class="block text-xs text-gray-500">{{ $siteOwner }}</span>
@@ -84,7 +89,11 @@
         <div class="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-8">
             <div>
                 <div class="flex items-center gap-3">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-unm-500 text-lg font-bold text-white">{{ Str::upper(Str::substr($siteName, 0, 2)) }}</span>
+                    @if ($siteLogo)
+                        <img src="{{ Storage::disk('public')->url($siteLogo) }}" alt="Logo {{ $siteName }}" class="h-10 w-10 rounded-lg bg-white object-contain p-0.5">
+                    @else
+                        <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-unm-500 text-lg font-bold text-white">{{ Str::upper(Str::substr($siteName, 0, 2)) }}</span>
+                    @endif
                     <span class="text-base font-bold text-white">{{ $siteName }}</span>
                 </div>
                 <p class="mt-4 text-sm leading-relaxed">

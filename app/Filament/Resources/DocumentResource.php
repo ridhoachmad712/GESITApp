@@ -320,13 +320,22 @@ class DocumentResource extends Resource
      */
     public static function categoryPickerComponents(): array
     {
+        $isLocked = fn ($livewire): bool => filled($livewire->lockedMainCategory ?? null);
+
         return [
+            // Saat dibuka dari menu kategori sidebar: kategori utama terkunci,
+            // ditampilkan sebagai keterangan saja
+            Forms\Components\Placeholder::make('kategori_utama_terkunci')
+                ->label('Kategori utama')
+                ->content(fn ($livewire): string => Category::find($livewire->lockedMainCategory ?? null)?->name ?? '—')
+                ->visible($isLocked),
             Forms\Components\Select::make('kategori_utama')
                 ->label('Kategori utama')
                 ->options(fn (): array => Category::root()->pluck('name', 'id')->all())
-                ->required()
+                ->required(fn ($livewire): bool => ! $isLocked($livewire))
                 ->live()
                 ->dehydrated(false)
+                ->hidden($isLocked)
                 ->afterStateHydrated(function (Forms\Components\Select $component, ?Document $record): void {
                     $category = $record?->category;
 
@@ -347,7 +356,7 @@ class DocumentResource extends Resource
                 // Filament tidak memvalidasi opsi select secara otomatis —
                 // pastikan sub-kategori memang milik kategori utama terpilih
                 ->in(fn (Get $get): array => array_keys(self::subcategoryOptions($get('kategori_utama'))))
-                ->helperText('Pilih kategori utama terlebih dahulu.'),
+                ->helperText(fn ($livewire): ?string => $isLocked($livewire) ? null : 'Pilih kategori utama terlebih dahulu.'),
         ];
     }
 

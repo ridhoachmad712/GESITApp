@@ -67,6 +67,51 @@ class DocumentCategoryPickerTest extends TestCase
         $this->assertSame($main->id, Document::where('slug', 'galeri-kegiatan')->first()->category_id);
     }
 
+    public function test_create_from_category_menu_locks_main_category(): void
+    {
+        $main = Category::factory()->create(['name' => 'Arsip Akademik Uji']);
+        $child = Category::factory()->create(['parent_id' => $main->id, 'name' => 'RPS Terkunci']);
+
+        Livewire::withQueryParams(['kategori_utama' => $main->id])
+            ->test(CreateDocument::class)
+            // Select kategori utama disembunyikan, diganti keterangan
+            ->assertFormFieldIsHidden('kategori_utama')
+            ->assertSee('Arsip Akademik Uji')
+            ->fillForm([
+                'title' => 'Dokumen Dari Menu Kategori',
+                'slug' => 'dokumen-dari-menu-kategori',
+                'category_id' => $child->id,
+                'visibility' => Document::VISIBILITY_INTERNAL,
+                'status' => Document::STATUS_PUBLISHED,
+                'file_path' => UploadedFile::fake()->create('terkunci.pdf', 30, 'application/pdf'),
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(
+            $child->id,
+            Document::where('slug', 'dokumen-dari-menu-kategori')->first()->category_id,
+        );
+    }
+
+    public function test_locked_main_category_without_children_autofills_category(): void
+    {
+        $main = Category::factory()->create(['name' => 'Dokumentasi Terkunci']);
+
+        Livewire::withQueryParams(['kategori_utama' => $main->id])
+            ->test(CreateDocument::class)
+            ->assertFormSet(['category_id' => $main->id]);
+    }
+
+    public function test_create_button_carries_active_category_filter(): void
+    {
+        $main = Category::factory()->create();
+
+        $this->get('/admin/documents?tableFilters[kategori_utama][value]='.$main->id)
+            ->assertOk()
+            ->assertSee('documents/create?kategori_utama='.$main->id, false);
+    }
+
     public function test_subcategory_of_other_main_category_is_rejected(): void
     {
         $mainA = Category::factory()->create();

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\DocumentResource\Pages;
 
 use App\Filament\Resources\DocumentResource;
 use App\Models\ActivityLog;
+use App\Models\Category;
 use App\Services\ActivityLogger;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,33 @@ use Illuminate\Support\Facades\Storage;
 class CreateDocument extends CreateRecord
 {
     protected static string $resource = DocumentResource::class;
+
+    /**
+     * Terisi saat halaman dibuka dari menu kategori di sidebar
+     * (?kategori_utama=) — pemilihan kategori utama disembunyikan
+     * dan sub-kategori dibatasi ke kategori tersebut.
+     */
+    public ?int $lockedMainCategory = null;
+
+    public function mount(): void
+    {
+        parent::mount();
+
+        $lockedId = request()->integer('kategori_utama');
+        $locked = $lockedId
+            ? Category::whereNull('parent_id')->find($lockedId)
+            : null;
+
+        if ($locked) {
+            $this->lockedMainCategory = $locked->id;
+            $this->data['kategori_utama'] = $locked->id;
+
+            // Kategori utama tanpa sub → langsung terpilih
+            if (Category::where('parent_id', $locked->id)->doesntExist()) {
+                $this->data['category_id'] = $locked->id;
+            }
+        }
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

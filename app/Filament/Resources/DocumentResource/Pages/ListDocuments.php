@@ -16,7 +16,16 @@ class ListDocuments extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            // Saat daftar sedang terfilter kategori utama (dari menu sidebar
+            // "Kategori Arsip"), form Buat langsung terkunci ke kategori itu
+            Actions\CreateAction::make()
+                ->url(function (): string {
+                    $mainCategoryId = $this->getTableFilterState('kategori_utama')['value'] ?? null;
+
+                    return DocumentResource::getUrl('create', array_filter([
+                        'kategori_utama' => $mainCategoryId,
+                    ]));
+                }),
         ];
     }
 

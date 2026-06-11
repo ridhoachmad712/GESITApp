@@ -29,8 +29,8 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName('SIARSIP Manajemen')
             ->colors([
-                // Oranye UNM (#F77F00)
-                'primary' => Color::hex('#F77F00'),
+                // Biru navy — warna dasar aplikasi
+                'primary' => Color::hex('#1E3A8A'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

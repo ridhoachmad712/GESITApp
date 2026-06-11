@@ -37,7 +37,7 @@ class DocumentsPerCategoryChart extends ChartWidget
                 [
                     'label' => 'Jumlah dokumen',
                     'data' => $values,
-                    'backgroundColor' => '#F77F00',
+                    'backgroundColor' => '#1E3A8A',
                 ],
             ],
             'labels' => $labels,

@@ -79,7 +79,7 @@ class LecturerResource extends Resource
                     ->label('Foto')
                     ->disk('public')
                     ->circular()
-                    ->defaultImageUrl('https://ui-avatars.com/api/?background=F77F00&color=fff&name=D'),
+                    ->defaultImageUrl('https://ui-avatars.com/api/?background=1E3A8A&color=fff&name=D'),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
                     ->searchable()

@@ -75,6 +75,7 @@ php artisan test     # jalankan SEBELUM setiap commit besar
 
 - [ ] Fase 1 — MVP (auth, CRUD dokumen, visibility, frontend publik, pencarian)
   - [x] Sesi 1 — Scaffold: Laravel 12 + Breeze (Blade) + Filament 3 di `/admin`, migrasi skema inti (users+role, categories, documents, activity_logs), model + relasi + soft delete, CategorySeeder (9 kategori + 49 sub), AdminUserSeeder, lang/id (2026-06-11)
+  - [x] Sesi 2 — Otorisasi: middleware `role`, DocumentPolicy (hierarki visibility + draft hanya admin + user nonaktif = publik), DocumentAccessController (/dokumen/{slug}/unduh & /preview dari disk privat `documents` + activity log + counter), registrasi = mahasiswa nonaktif menunggu approval admin, login menolak akun nonaktif; 62 test pass termasuk matriks 12 role×visibility (2026-06-11)
 - [ ] Fase 2 — Bulk upload, import user, statistik
 - [ ] Fase 3 — Versioning, notifikasi MoU, mapping akreditasi LAMEMBA
 

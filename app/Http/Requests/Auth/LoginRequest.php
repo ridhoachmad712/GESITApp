@@ -50,6 +50,14 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if (! Auth::user()->is_active) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda belum aktif atau telah dinonaktifkan. Silakan hubungi admin prodi.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

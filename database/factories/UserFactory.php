@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -29,7 +30,30 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => User::ROLE_MAHASISWA,
+            'identity_number' => fake()->unique()->numerify('##########'),
+            'is_active' => true,
         ];
+    }
+
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => User::ROLE_ADMIN]);
+    }
+
+    public function dosen(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => User::ROLE_DOSEN]);
+    }
+
+    public function mahasiswa(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => User::ROLE_MAHASISWA]);
+    }
+
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => ['is_active' => false]);
     }
 
     /**

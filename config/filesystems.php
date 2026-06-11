@@ -38,6 +38,16 @@ return [
             'report' => false,
         ],
 
+        // Penyimpanan dokumen arsip — di luar webroot, TANPA route serve bawaan;
+        // akses hanya lewat DocumentAccessController setelah cek policy.
+        'documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/documents'),
+            'serve' => false,
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

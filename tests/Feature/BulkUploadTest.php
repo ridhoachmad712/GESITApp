@@ -41,6 +41,7 @@ class BulkUploadTest extends TestCase
 
         Livewire::test(BulkUploadDocuments::class)
             ->fillForm([
+                'kategori_utama' => $category->id,
                 'category_id' => $category->id,
                 'visibility' => Document::VISIBILITY_MAHASISWA,
                 'status' => Document::STATUS_PUBLISHED,
@@ -80,6 +81,7 @@ class BulkUploadTest extends TestCase
 
         Livewire::test(BulkUploadDocuments::class)
             ->fillForm([
+                'kategori_utama' => $category->id,
                 'category_id' => $category->id,
                 'visibility' => Document::VISIBILITY_INTERNAL,
                 'status' => Document::STATUS_DRAFT,

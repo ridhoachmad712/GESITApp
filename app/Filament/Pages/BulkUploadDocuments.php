@@ -53,12 +53,7 @@ class BulkUploadDocuments extends Page implements HasForms
                 Forms\Components\Section::make('Metadata Bersama')
                     ->description('Diterapkan ke semua berkas yang diunggah. Judul tiap dokumen diambil dari nama berkasnya — rapikan lewat menu Dokumen bila perlu.')
                     ->schema([
-                        Forms\Components\Select::make('category_id')
-                            ->label('Kategori')
-                            ->options(fn (): array => Category::groupedSelectOptions())
-                            ->searchable()
-                            ->required()
-                            ->live(),
+                        ...DocumentResource::categoryPickerComponents(),
                         Forms\Components\Select::make('visibility')
                             ->label('Visibilitas')
                             ->options([
@@ -145,7 +140,10 @@ class BulkUploadDocuments extends Page implements HasForms
             $created++;
         }
 
+        $chosenCategory = Category::find($data['category_id']);
+
         $this->form->fill([
+            'kategori_utama' => $chosenCategory?->parent_id ?? $chosenCategory?->id,
             'category_id' => $data['category_id'],
             'visibility' => $data['visibility'],
             'status' => $data['status'],

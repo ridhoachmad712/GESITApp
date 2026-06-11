@@ -16,9 +16,9 @@ class ActivityLogResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
-    protected static ?string $navigationGroup = 'Manajemen Arsip';
+    protected static ?string $navigationGroup = 'Pengaturan';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $modelLabel = 'Log Aktivitas';
 

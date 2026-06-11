@@ -68,12 +68,7 @@ class DocumentResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->rules(['alpha_dash'])
                             ->helperText('Digunakan pada alamat URL dokumen.'),
-                        Forms\Components\Select::make('category_id')
-                            ->label('Kategori')
-                            ->options(fn (): array => Category::groupedSelectOptions())
-                            ->searchable()
-                            ->required()
-                            ->live(),
+                        ...self::categoryPickerComponents(),
                         Forms\Components\Select::make('visibility')
                             ->label('Visibilitas')
                             ->options([
@@ -235,6 +230,12 @@ class DocumentResource extends Resource
                     ->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->striped()
+            ->defaultPaginationPageOption(25)
+            ->persistFiltersInSession()
+            ->persistSearchInSession()
+            ->emptyStateHeading('Belum ada dokumen')
+            ->emptyStateDescription('Unggah dokumen pertama lewat tombol di kanan atas, atau gunakan Unggah Massal untuk banyak berkas sekaligus.')
             ->filters([
                 Tables\Filters\SelectFilter::make('kategori_utama')
                     ->label('Kategori utama')
@@ -262,13 +263,6 @@ class DocumentResource extends Resource
                         Document::VISIBILITY_PUBLIC => 'Publik',
                         Document::VISIBILITY_MAHASISWA => 'Mahasiswa',
                         Document::VISIBILITY_INTERNAL => 'Internal',
-                    ]),
-                Tables\Filters\SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        Document::STATUS_DRAFT => 'Draf',
-                        Document::STATUS_PUBLISHED => 'Terbit',
-                        Document::STATUS_ARCHIVED => 'Diarsipkan',
                     ]),
                 Tables\Filters\SelectFilter::make('academic_year')
                     ->label('Tahun Akademik')
@@ -315,6 +309,67 @@ class DocumentResource extends Resource
             'create' => Pages\CreateDocument::route('/create'),
             'edit' => Pages\EditDocument::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Pasangan select bertingkat: kategori utama dulu, lalu sub-kategori
+     * menyesuaikan. Kategori utama tanpa sub memakai dirinya sendiri.
+     * Dipakai form Dokumen dan halaman Unggah Massal.
+     *
+     * @return array<Forms\Components\Select>
+     */
+    public static function categoryPickerComponents(): array
+    {
+        return [
+            Forms\Components\Select::make('kategori_utama')
+                ->label('Kategori utama')
+                ->options(fn (): array => Category::root()->pluck('name', 'id')->all())
+                ->required()
+                ->live()
+                ->dehydrated(false)
+                ->afterStateHydrated(function (Forms\Components\Select $component, ?Document $record): void {
+                    $category = $record?->category;
+
+                    $component->state($category?->parent_id ?? $category?->id);
+                })
+                ->afterStateUpdated(function ($state, Set $set): void {
+                    // Tanpa sub-kategori → dokumen langsung di kategori utama
+                    $hasChildren = $state && Category::where('parent_id', $state)->exists();
+
+                    $set('category_id', $hasChildren ? null : $state);
+                }),
+            Forms\Components\Select::make('category_id')
+                ->label('Sub-kategori')
+                ->options(fn (Get $get): array => self::subcategoryOptions($get('kategori_utama')))
+                ->required()
+                ->live()
+                ->disabled(fn (Get $get): bool => blank($get('kategori_utama')))
+                // Filament tidak memvalidasi opsi select secara otomatis —
+                // pastikan sub-kategori memang milik kategori utama terpilih
+                ->in(fn (Get $get): array => array_keys(self::subcategoryOptions($get('kategori_utama'))))
+                ->helperText('Pilih kategori utama terlebih dahulu.'),
+        ];
+    }
+
+    /**
+     * Opsi sub-kategori dari satu kategori utama; kategori utama tanpa
+     * sub memakai dirinya sendiri sebagai pilihan.
+     *
+     * @return array<int, string>
+     */
+    private static function subcategoryOptions(int|string|null $mainId): array
+    {
+        if (! $mainId) {
+            return [];
+        }
+
+        $children = Category::where('parent_id', $mainId)
+            ->orderBy('sort_order')
+            ->pluck('name', 'id');
+
+        return $children->isNotEmpty()
+            ? $children->all()
+            : Category::whereKey($mainId)->pluck('name', 'id')->all();
     }
 
     /**

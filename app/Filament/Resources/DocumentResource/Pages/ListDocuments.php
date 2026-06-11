@@ -3,8 +3,11 @@
 namespace App\Filament\Resources\DocumentResource\Pages;
 
 use App\Filament\Resources\DocumentResource;
+use App\Models\Document;
 use Filament\Actions;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListDocuments extends ListRecords
 {
@@ -14,6 +17,29 @@ class ListDocuments extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    /**
+     * Tab status di atas tabel — lebih cepat daripada membuka filter.
+     */
+    public function getTabs(): array
+    {
+        return [
+            'semua' => Tab::make('Semua')
+                ->badge(Document::count()),
+            'terbit' => Tab::make('Terbit')
+                ->badge(Document::where('status', Document::STATUS_PUBLISHED)->count())
+                ->badgeColor('success')
+                ->modifyQueryUsing(fn (Builder $query): Builder => $query->where('status', Document::STATUS_PUBLISHED)),
+            'draf' => Tab::make('Draf')
+                ->badge(Document::where('status', Document::STATUS_DRAFT)->count())
+                ->badgeColor('gray')
+                ->modifyQueryUsing(fn (Builder $query): Builder => $query->where('status', Document::STATUS_DRAFT)),
+            'diarsipkan' => Tab::make('Diarsipkan')
+                ->badge(Document::where('status', Document::STATUS_ARCHIVED)->count())
+                ->badgeColor('warning')
+                ->modifyQueryUsing(fn (Builder $query): Builder => $query->where('status', Document::STATUS_ARCHIVED)),
         ];
     }
 }

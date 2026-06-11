@@ -141,46 +141,7 @@
     </section>
 
     @if ($document->mime_type === 'application/pdf')
-        {{-- Preview PDF dengan PDF.js --}}
-        <script type="module">
-            import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
-
-            pdfjsLib.GlobalWorkerOptions.workerSrc =
-                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
-
-            const container = document.getElementById('pdf-container');
-            const status = document.getElementById('pdf-status');
-
-            try {
-                const pdf = await pdfjsLib.getDocument(container.dataset.url).promise;
-                status.remove();
-
-                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-                    const page = await pdf.getPage(pageNumber);
-                    const containerWidth = container.clientWidth - 24; // padding p-3
-                    const unscaled = page.getViewport({ scale: 1 });
-                    const scale = containerWidth / unscaled.width;
-                    const outputScale = window.devicePixelRatio || 1;
-                    const viewport = page.getViewport({ scale });
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = Math.floor(viewport.width * outputScale);
-                    canvas.height = Math.floor(viewport.height * outputScale);
-                    canvas.style.width = Math.floor(viewport.width) + 'px';
-                    canvas.style.height = Math.floor(viewport.height) + 'px';
-                    canvas.className = 'mx-auto rounded shadow-sm bg-white';
-                    container.appendChild(canvas);
-
-                    await page.render({
-                        canvasContext: canvas.getContext('2d'),
-                        transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null,
-                        viewport,
-                    }).promise;
-                }
-            } catch (error) {
-                status.textContent = 'Pratinjau gagal dimuat. Silakan unduh dokumen.';
-                console.error(error);
-            }
-        </script>
+        {{-- Preview PDF dengan PDF.js (dibundel lokal, tanpa CDN) --}}
+        @vite('resources/js/pdf-viewer.js')
     @endif
 @endsection

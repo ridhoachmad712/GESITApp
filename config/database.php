@@ -60,6 +60,13 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+            // Untuk spatie/laravel-backup: lokasi folder mysqldump bila tidak
+            // ada di PATH (lokal XAMPP: C:\xampp\mysql\bin). useSingleTransaction
+            // menghindari penguncian tabel InnoDB saat dump.
+            'dump' => array_filter([
+                'dump_binary_path' => env('DB_DUMP_BINARY_PATH'),
+                'useSingleTransaction' => true,
+            ]),
         ],
 
         'mariadb' => [

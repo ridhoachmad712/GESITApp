@@ -29,8 +29,10 @@ Route::get('/cari', [SearchController::class, 'index'])->name('cari');
 Route::get('/dokumen/{document:slug}', [DocumentController::class, 'show'])
     ->name('documents.show');
 Route::get('/dokumen/{document:slug}/unduh', [DocumentAccessController::class, 'download'])
+    ->middleware('throttle:downloads')
     ->name('documents.download');
 Route::get('/dokumen/{document:slug}/preview', [DocumentAccessController::class, 'preview'])
+    ->middleware('throttle:downloads')
     ->name('documents.preview');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])

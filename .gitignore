@@ -1,6 +1,7 @@
 /.phpunit.cache
 /node_modules
-/public/build
+# public/build sengaja DI-COMMIT: Hostinger shared hosting tidak punya Node.js,
+# jadi `npm run build` dijalankan lokal sebelum push.
 /public/hot
 /public/storage
 /storage/*.key

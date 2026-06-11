@@ -21,7 +21,7 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Manajemen Arsip';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $modelLabel = 'Kategori';
 

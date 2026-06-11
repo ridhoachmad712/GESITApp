@@ -41,6 +41,12 @@ class AdminPanelProvider extends PanelProvider
                 // Warna dasar dari Pengaturan Tampilan
                 'primary' => Color::hex(Setting::get('primary_color') ?? '#1E3A8A'),
             ])
+            // Urutan grup sidebar (Dashboard tanpa grup selalu paling atas)
+            ->navigationGroups([
+                'Manajemen Arsip',
+                'Kategori Arsip',
+                'Pengaturan',
+            ])
             // Lazy via bootUsing: query kategori hanya saat panel admin diakses
             ->bootUsing(function (Panel $panel): void {
                 $panel->navigationItems($this->categoryNavigationItems());

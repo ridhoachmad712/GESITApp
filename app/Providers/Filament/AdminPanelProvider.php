@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Login;
 use App\Filament\Resources\DocumentResource;
 use App\Models\Category;
 use App\Models\Setting;
@@ -31,7 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
             ->brandName(fn (): string => Setting::get('site_name').' — Panel Admin')
             ->brandLogo(fn (): ?string => Setting::get('logo_path')
                 ? Storage::disk('public')->url(Setting::get('logo_path'))

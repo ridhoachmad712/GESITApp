@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="mb-6">
+        <h1 class="text-lg font-bold text-gray-900">Masuk</h1>
+        <p class="mt-1 text-sm text-gray-500">Gunakan akun yang terdaftar untuk mengakses dokumen sesuai hak akses Anda.</p>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -27,21 +32,28 @@
         <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-unm-600 shadow-sm focus:ring-unm-500" name="remember">
                 <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="mt-6 flex items-center justify-between gap-3">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+                <a class="text-sm text-gray-500 transition hover:text-unm-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-unm-500 rounded-md" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button>
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        @if (Route::has('register'))
+            <p class="mt-6 border-t border-gray-100 pt-4 text-center text-sm text-gray-500">
+                Mahasiswa belum punya akun?
+                <a href="{{ route('register') }}" class="font-semibold text-unm-600 hover:text-unm-700">Daftar di sini</a>
+            </p>
+        @endif
     </form>
 </x-guest-layout>

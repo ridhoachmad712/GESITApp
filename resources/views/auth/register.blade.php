@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="mb-6">
+        <h1 class="text-lg font-bold text-gray-900">Daftar Akun Mahasiswa</h1>
+        <p class="mt-1 text-sm text-gray-500">Akun akan aktif setelah diverifikasi oleh admin prodi.</p>
+    </div>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
@@ -46,12 +51,12 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
+        <div class="mt-6 flex items-center justify-between gap-3">
+            <a class="text-sm text-gray-500 transition hover:text-unm-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-unm-500 rounded-md" href="{{ route('login') }}">
                 {{ __('Already registered?') }}
             </a>
 
-            <x-primary-button class="ms-4">
+            <x-primary-button>
                 {{ __('Register') }}
             </x-primary-button>
         </div>

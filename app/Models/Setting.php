@@ -17,6 +17,8 @@ class Setting extends Model
         'site_tagline' => 'Gerakan Sistem Informasi Terpadu',
         'site_owner' => 'Program Studi Manajemen FEB Universitas Negeri Makassar',
         'primary_color' => '#1E3A8A',
+        'hero_overlay_color' => '#1E3A8A',
+        'hero_overlay_opacity' => '80',
     ];
 
     protected $fillable = ['key', 'value'];

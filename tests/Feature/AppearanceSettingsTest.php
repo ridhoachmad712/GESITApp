@@ -46,6 +46,38 @@ class AppearanceSettingsTest extends TestCase
             ->assertSee('--unm-500: '.$navy[500], false);
     }
 
+    public function test_hero_uses_gradient_when_no_image_set(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('bg-gradient-to-br', false)
+            ->assertDontSee('background-image', false);
+    }
+
+    public function test_hero_uses_photo_with_color_overlay_when_set(): void
+    {
+        Setting::set('hero_image_path', 'hero/kampus-unm.jpg');
+        Setting::set('hero_overlay_color', '#000000');
+        Setting::set('hero_overlay_opacity', '60');
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('background-image', false)
+            ->assertSee('/storage/hero/kampus-unm.jpg', false)
+            ->assertSee('rgb(0 0 0 / 0.6)', false)
+            ->assertDontSee('bg-gradient-to-br', false);
+    }
+
+    public function test_hero_overlay_opacity_is_clamped(): void
+    {
+        Setting::set('hero_image_path', 'hero/kampus-unm.jpg');
+        Setting::set('hero_overlay_opacity', '250'); // nilai liar → dibatasi 100
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('/ 1)', false);
+    }
+
     public function test_admin_can_open_appearance_settings_page(): void
     {
         $this->actingAs(User::factory()->admin()->create());

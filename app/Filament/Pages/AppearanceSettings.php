@@ -37,6 +37,9 @@ class AppearanceSettings extends Page implements HasForms
             'site_owner' => Setting::get('site_owner'),
             'primary_color' => Setting::get('primary_color'),
             'logo_path' => Setting::get('logo_path'),
+            'hero_image_path' => Setting::get('hero_image_path'),
+            'hero_overlay_color' => Setting::get('hero_overlay_color'),
+            'hero_overlay_opacity' => Setting::get('hero_overlay_opacity'),
         ]);
     }
 
@@ -79,6 +82,32 @@ class AppearanceSettings extends Page implements HasForms
                             ->regex('/^#[0-9a-fA-F]{6}$/')
                             ->helperText('Berlaku untuk situs publik dan panel admin. Gradasi terang–gelap dihitung otomatis. Tidak perlu build ulang.'),
                     ]),
+
+                Forms\Components\Section::make('Hero Beranda')
+                    ->description('Latar belakang area judul besar di halaman depan. Tanpa foto, hero memakai gradasi warna dasar.')
+                    ->schema([
+                        Forms\Components\FileUpload::make('hero_image_path')
+                            ->label('Foto latar hero')
+                            ->image()
+                            ->disk('public')
+                            ->directory('hero')
+                            ->maxSize(3072)
+                            ->helperText('Opsional, JPG/PNG maks 3 MB. Disarankan foto lanskap minimal 1600px, mis. gedung kampus atau kegiatan prodi.'),
+                        Forms\Components\ColorPicker::make('hero_overlay_color')
+                            ->label('Warna overlay')
+                            ->required()
+                            ->regex('/^#[0-9a-fA-F]{6}$/')
+                            ->helperText('Lapisan warna di atas foto agar teks tetap terbaca.'),
+                        Forms\Components\TextInput::make('hero_overlay_opacity')
+                            ->label('Ketebalan overlay')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(100)
+                            ->required()
+                            ->suffix('%')
+                            ->helperText('0 = foto polos tanpa overlay, 100 = warna penuh (foto tidak terlihat). Disarankan 60–85.'),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -86,11 +115,12 @@ class AppearanceSettings extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        foreach (['site_name', 'site_tagline', 'site_owner', 'primary_color'] as $key) {
+        foreach (['site_name', 'site_tagline', 'site_owner', 'primary_color', 'hero_overlay_color', 'hero_overlay_opacity'] as $key) {
             Setting::set($key, $data[$key]);
         }
 
         Setting::set('logo_path', $data['logo_path'] ?: null);
+        Setting::set('hero_image_path', $data['hero_image_path'] ?: null);
 
         Notification::make()
             ->success()

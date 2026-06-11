@@ -2,9 +2,19 @@
 
 @section('content')
 
-    {{-- Hero --}}
-    <section class="bg-gradient-to-br from-unm-500 via-unm-600 to-unm-700 text-white">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+    {{-- Hero — foto latar + overlay warna dari Pengaturan Tampilan,
+         fallback gradasi warna tema bila foto belum diunggah --}}
+    @php
+        $heroImage = \App\Models\Setting::get('hero_image_path');
+        [$ovR, $ovG, $ovB] = \App\Support\ColorPalette::hexToRgb(\App\Models\Setting::get('hero_overlay_color') ?? '#1E3A8A');
+        $ovOpacity = max(0, min(100, (int) \App\Models\Setting::get('hero_overlay_opacity'))) / 100;
+    @endphp
+    <section class="relative text-white {{ $heroImage ? 'bg-cover bg-center' : 'bg-gradient-to-br from-unm-500 via-unm-600 to-unm-700' }}"
+             @if ($heroImage) style="background-image: url('{{ Storage::disk('public')->url($heroImage) }}')" @endif>
+        @if ($heroImage)
+            <div class="absolute inset-0" style="background-color: rgb({{ $ovR }} {{ $ovG }} {{ $ovB }} / {{ $ovOpacity }})" aria-hidden="true"></div>
+        @endif
+        <div class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
             <div class="max-w-3xl">
                 <p class="text-sm font-semibold uppercase tracking-widest text-unm-100">
                     {{ \App\Models\Setting::get('site_owner') }}

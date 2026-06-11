@@ -18,7 +18,7 @@ class ActivityLogResource extends Resource
 
     protected static ?string $navigationGroup = 'Pengaturan';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $modelLabel = 'Log Aktivitas';
 

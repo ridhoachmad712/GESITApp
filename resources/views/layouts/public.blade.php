@@ -8,6 +8,13 @@
         $siteTagline = \App\Models\Setting::get('site_tagline');
         $siteOwner = \App\Models\Setting::get('site_owner');
         $siteLogo = \App\Models\Setting::get('logo_path');
+
+        // Urutan menu diatur dari admin → Konten Beranda
+        $navLinks = collect([
+            ['label' => 'Beranda', 'href' => route('home'), 'active' => request()->routeIs('home'), 'order' => (int) \App\Models\Setting::get('nav_beranda_order')],
+            ['label' => 'Arsip', 'href' => route('arsip.index'), 'active' => request()->routeIs('arsip.*'), 'order' => (int) \App\Models\Setting::get('nav_arsip_order')],
+            ['label' => 'Pencarian', 'href' => route('cari'), 'active' => request()->routeIs('cari'), 'order' => (int) \App\Models\Setting::get('nav_cari_order')],
+        ])->sortBy('order')->values();
     @endphp
     <title>@hasSection('title')@yield('title') — {{ $siteName }}@else{{ $siteName }} — {{ $siteTagline }}@endif</title>
     <meta name="description" content="@yield('meta_description', $siteName.' — '.$siteTagline.', arsip digital '.$siteOwner.'.')">
@@ -37,9 +44,9 @@
 
             {{-- Menu desktop --}}
             <div class="hidden items-center gap-1 md:flex">
-                <x-nav-public href="{{ route('home') }}" :active="request()->routeIs('home')">Beranda</x-nav-public>
-                <x-nav-public href="{{ route('arsip.index') }}" :active="request()->routeIs('arsip.*')">Arsip</x-nav-public>
-                <x-nav-public href="{{ route('cari') }}" :active="request()->routeIs('cari')">Pencarian</x-nav-public>
+                @foreach ($navLinks as $link)
+                    <x-nav-public href="{{ $link['href'] }}" :active="$link['active']">{{ $link['label'] }}</x-nav-public>
+                @endforeach
 
                 @auth
                     <a href="{{ auth()->user()->isAdmin() ? '/admin' : route('dashboard') }}"
@@ -65,9 +72,9 @@
         {{-- Menu mobile --}}
         <div x-show="open" x-cloak class="border-t border-gray-100 bg-white px-4 pb-4 pt-2 md:hidden">
             <div class="flex flex-col gap-1">
-                <x-nav-public href="{{ route('home') }}" :active="request()->routeIs('home')">Beranda</x-nav-public>
-                <x-nav-public href="{{ route('arsip.index') }}" :active="request()->routeIs('arsip.*')">Arsip</x-nav-public>
-                <x-nav-public href="{{ route('cari') }}" :active="request()->routeIs('cari')">Pencarian</x-nav-public>
+                @foreach ($navLinks as $link)
+                    <x-nav-public href="{{ $link['href'] }}" :active="$link['active']">{{ $link['label'] }}</x-nav-public>
+                @endforeach
                 @auth
                     <a href="{{ auth()->user()->isAdmin() ? '/admin' : route('dashboard') }}"
                        class="mt-2 rounded-lg bg-unm-500 px-4 py-2 text-center text-sm font-semibold text-white">Dasbor</a>
@@ -103,18 +110,28 @@
             <div>
                 <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Tautan</h3>
                 <ul class="mt-4 space-y-2 text-sm">
-                    <li><a href="{{ route('home') }}" class="hover:text-unm-300">Beranda</a></li>
-                    <li><a href="{{ route('arsip.index') }}" class="hover:text-unm-300">Arsip Dokumen</a></li>
-                    <li><a href="{{ route('cari') }}" class="hover:text-unm-300">Pencarian</a></li>
+                    @foreach ($navLinks as $link)
+                        <li><a href="{{ $link['href'] }}" class="hover:text-unm-300">{{ $link['label'] }}</a></li>
+                    @endforeach
                     <li><a href="{{ route('login') }}" class="hover:text-unm-300">Masuk</a></li>
                 </ul>
             </div>
             <div>
                 <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Kontak</h3>
                 <ul class="mt-4 space-y-2 text-sm leading-relaxed">
-                    <li>Kampus UNM Gunung Sari</li>
-                    <li>Jl. A. P. Pettarani, Makassar, Sulawesi Selatan</li>
-                    <li><a href="https://feb.unm.ac.id" target="_blank" rel="noopener" class="hover:text-unm-300">feb.unm.ac.id</a></li>
+                    @if (\App\Models\Setting::get('footer_contact_line1'))
+                        <li>{{ \App\Models\Setting::get('footer_contact_line1') }}</li>
+                    @endif
+                    @if (\App\Models\Setting::get('footer_contact_line2'))
+                        <li>{{ \App\Models\Setting::get('footer_contact_line2') }}</li>
+                    @endif
+                    @if (\App\Models\Setting::get('footer_link_url'))
+                        <li>
+                            <a href="{{ \App\Models\Setting::get('footer_link_url') }}" target="_blank" rel="noopener" class="hover:text-unm-300">
+                                {{ \App\Models\Setting::get('footer_link_label') ?: \App\Models\Setting::get('footer_link_url') }}
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </div>

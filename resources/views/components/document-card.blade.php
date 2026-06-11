@@ -1,9 +1,17 @@
 @props(['document'])
 
 <article class="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-unm-300 hover:shadow-md">
-    <div class="flex items-center gap-2 text-xs">
+    <div class="flex flex-wrap items-center gap-2 text-xs">
         <span class="rounded-full bg-unm-50 px-2.5 py-1 font-medium text-unm-700">
             {{ $document->category->name }}
+        </span>
+        @php
+            $jenisBerkas = $document->isExternal()
+                ? ($document->googleDriveEmbedUrl() ? 'Drive' : 'Tautan')
+                : (strtoupper(pathinfo((string) $document->file_name, PATHINFO_EXTENSION)) ?: 'Berkas');
+        @endphp
+        <span class="rounded-full bg-gray-100 px-2.5 py-1 font-medium text-gray-600">
+            {{ $jenisBerkas }}{{ ! $document->isExternal() && $document->file_size ? ' · '.Number::fileSize($document->file_size, 0) : '' }}
         </span>
         @if ($document->academic_year)
             <span class="text-gray-500">{{ $document->academic_year }}</span>

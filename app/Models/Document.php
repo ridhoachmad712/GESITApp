@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Document extends Model
 {
@@ -26,6 +27,20 @@ class Document extends Model
     public const STATUS_DRAFT = 'draft';
 
     public const STATUS_ARCHIVED = 'archived';
+
+    protected static function booted(): void
+    {
+        // CLAUDE.md aturan 4 — penghapusan (soft delete) dicatat ke activity_logs.
+        static::deleted(function (Document $document): void {
+            ActivityLog::create([
+                'user_id' => auth()->id(),
+                'document_id' => $document->isForceDeleting() ? null : $document->id,
+                'action' => ActivityLog::ACTION_DELETE,
+                'ip_address' => request()->ip(),
+                'user_agent' => Str::limit((string) request()->userAgent(), 500),
+            ]);
+        });
+    }
 
     protected $fillable = [
         'title',

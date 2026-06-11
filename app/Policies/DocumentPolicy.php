@@ -39,4 +39,39 @@ class DocumentPolicy
     {
         return $this->view($user, $document);
     }
+
+    // ---- Ability CRUD untuk panel admin (Filament) ----
+
+    public function viewAny(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
+    public function create(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
+    public function update(User $user, Document $document): bool
+    {
+        return $user->isAdmin();
+    }
+
+    public function delete(User $user, Document $document): bool
+    {
+        return $user->isAdmin();
+    }
+
+    public function restore(User $user, Document $document): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /**
+     * CLAUDE.md aturan 3: tidak ada hard delete dari UI.
+     */
+    public function forceDelete(User $user, Document $document): bool
+    {
+        return false;
+    }
 }

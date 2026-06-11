@@ -52,6 +52,7 @@ class ArchiveController extends Controller
             'documents' => $documents,
             'years' => $years,
             'selectedYear' => (string) $request->string('tahun'),
+            'viewMode' => $request->query('tampilan') === 'list' ? 'list' : 'grid',
         ]);
     }
 }

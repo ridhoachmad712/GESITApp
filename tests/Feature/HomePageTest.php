@@ -22,7 +22,8 @@ class HomePageTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('Arsip Digital Program Studi Manajemen');
+            ->assertSee('GESIT')
+            ->assertSee('Gerakan Sistem Informasi Terpadu');
     }
 
     public function test_home_page_shows_only_public_published_documents(): void

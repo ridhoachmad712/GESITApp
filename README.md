@@ -1,8 +1,10 @@
-# SIARSIP Manajemen — Sistem Informasi Arsip Digital
+# GESIT — Gerakan Sistem Informasi Terpadu
 
 Sistem arsip digital Program Studi Manajemen, Fakultas Ekonomi dan Bisnis,
 Universitas Negeri Makassar. Repositori dokumen dengan tiga lapis akses
-(publik / mahasiswa / internal) plus panel admin.
+(publik / mahasiswa / internal) plus panel admin. Identitas situs (nama,
+tagline, pemilik) dan warna dasar dapat diubah dari panel admin
+(menu Pengaturan Tampilan) tanpa menyentuh kode.
 
 **Stack:** Laravel 12 · Filament 3 (`/admin`) · MySQL 8 · Blade + Tailwind CSS + Alpine.js · PDF.js
 
@@ -18,7 +20,7 @@ Prasyarat: PHP 8.2+, Composer, MySQL/MariaDB, Node.js 18+.
 composer install && npm install
 cp .env.example .env          # lalu isi kredensial DB lokal
 php artisan key:generate
-php artisan migrate --seed    # 9 kategori arsip, halaman profil, akun admin
+php artisan migrate --seed    # 9 kategori arsip, pengaturan situs, akun admin
 php artisan storage:link
 npm run build                 # atau `npm run dev` saat pengembangan
 php artisan serve

@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Category;
 use App\Models\Document;
+use App\Models\Setting;
 use Filament\Widgets\ChartWidget;
 
 class DocumentsPerCategoryChart extends ChartWidget
@@ -37,7 +38,7 @@ class DocumentsPerCategoryChart extends ChartWidget
                 [
                     'label' => 'Jumlah dokumen',
                     'data' => $values,
-                    'backgroundColor' => '#1E3A8A',
+                    'backgroundColor' => Setting::get('primary_color') ?? '#1E3A8A',
                 ],
             ],
             'labels' => $labels,

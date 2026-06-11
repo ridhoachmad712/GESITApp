@@ -7,15 +7,14 @@
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
             <div class="max-w-3xl">
                 <p class="text-sm font-semibold uppercase tracking-widest text-unm-100">
-                    Program Studi Manajemen FEB UNM
+                    {{ \App\Models\Setting::get('site_owner') }}
                 </p>
                 <h1 class="mt-3 text-3xl font-bold leading-tight sm:text-5xl">
-                    Arsip Digital Program Studi Manajemen
+                    {{ \App\Models\Setting::get('site_name') }} — {{ \App\Models\Setting::get('site_tagline') }}
                 </h1>
                 <p class="mt-5 max-w-2xl text-base leading-relaxed text-unm-50 sm:text-lg">
-                    Akses dokumen akademik, kemahasiswaan, penelitian, dan bukti kinerja akreditasi
-                    Program Studi Manajemen Fakultas Ekonomi dan Bisnis Universitas Negeri Makassar
-                    dalam satu pintu.
+                    Akses dokumen akademik, kemahasiswaan, penelitian, dan bukti kinerja
+                    akreditasi program studi dalam satu pintu.
                 </p>
 
                 @if (Route::has('cari'))

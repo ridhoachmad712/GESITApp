@@ -208,6 +208,21 @@ class DocumentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                Tables\Filters\SelectFilter::make('kategori_utama')
+                    ->label('Kategori utama')
+                    ->options(fn (): array => Category::root()->pluck('name', 'id')->all())
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (blank($data['value'] ?? null)) {
+                            return $query;
+                        }
+
+                        $ids = Category::query()
+                            ->where('id', $data['value'])
+                            ->orWhere('parent_id', $data['value'])
+                            ->pluck('id');
+
+                        return $query->whereIn('category_id', $ids);
+                    }),
                 Tables\Filters\SelectFilter::make('category_id')
                     ->label('Kategori')
                     ->relationship('category', 'name')

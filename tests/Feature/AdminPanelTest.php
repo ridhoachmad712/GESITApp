@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -45,5 +46,17 @@ class AdminPanelTest extends TestCase
         $this->get('/admin/documents/create')->assertOk();
         $this->get('/admin/categories')->assertOk();
         $this->get('/admin/users')->assertOk();
+    }
+
+    public function test_sidebar_shows_main_category_menu(): void
+    {
+        $this->seed(CategorySeeder::class);
+        $this->actingAs(User::factory()->admin()->create());
+
+        $this->get('/admin')
+            ->assertOk()
+            ->assertSee('Kategori Arsip')
+            ->assertSee('Profil dan Dokumen Dasar')
+            ->assertSee('Dokumentasi');
     }
 }

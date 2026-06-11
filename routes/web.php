@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentAccessController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\HomeController;
@@ -32,9 +33,9 @@ Route::get('/dokumen/{document:slug}/unduh', [DocumentAccessController::class, '
 Route::get('/dokumen/{document:slug}/preview', [DocumentAccessController::class, 'preview'])
     ->name('documents.preview');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -28,7 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Redirect pasca-login sesuai role: admin → panel Filament, lainnya → dashboard
+        $defaultTarget = $request->user()->isAdmin()
+            ? '/admin'
+            : route('dashboard', absolute: false);
+
+        return redirect()->intended($defaultTarget);
     }
 
     /**

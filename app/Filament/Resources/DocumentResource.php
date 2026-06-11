@@ -70,7 +70,7 @@ class DocumentResource extends Resource
                             ->helperText('Digunakan pada alamat URL dokumen.'),
                         Forms\Components\Select::make('category_id')
                             ->label('Kategori')
-                            ->options(fn (): array => self::categoryOptions())
+                            ->options(fn (): array => Category::groupedSelectOptions())
                             ->searchable()
                             ->required()
                             ->live(),
@@ -267,27 +267,6 @@ class DocumentResource extends Resource
             'create' => Pages\CreateDocument::route('/create'),
             'edit' => Pages\EditDocument::route('/{record}/edit'),
         ];
-    }
-
-    /**
-     * Opsi select bertingkat: kategori utama sebagai optgroup,
-     * kategori utama tanpa sub langsung bisa dipilih.
-     */
-    private static function categoryOptions(): array
-    {
-        $options = [];
-
-        foreach (Category::with('children')->root()->get() as $root) {
-            if ($root->children->isEmpty()) {
-                $options[$root->id] = $root->name;
-
-                continue;
-            }
-
-            $options[$root->name] = $root->children->pluck('name', 'id')->all();
-        }
-
-        return $options;
     }
 
     /**

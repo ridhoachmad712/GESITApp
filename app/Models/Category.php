@@ -53,6 +53,27 @@ class Category extends Model
     }
 
     /**
+     * Opsi select bertingkat: kategori utama jadi optgroup,
+     * kategori utama tanpa sub langsung bisa dipilih.
+     */
+    public static function groupedSelectOptions(): array
+    {
+        $options = [];
+
+        foreach (static::with('children')->root()->get() as $root) {
+            if ($root->children->isEmpty()) {
+                $options[$root->id] = $root->name;
+
+                continue;
+            }
+
+            $options[$root->name] = $root->children->pluck('name', 'id')->all();
+        }
+
+        return $options;
+    }
+
+    /**
      * Kategori utama beserta jumlah dokumen terbit yang boleh dilihat
      * $user (termasuk dokumen di sub-kategorinya), pada atribut
      * `visible_documents_count`.

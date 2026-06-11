@@ -24,6 +24,8 @@ class EditDocument extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $data = CreateDocument::normalizeSource($data);
+
         $disk = Storage::disk('documents');
 
         // Perbarui metadata hanya jika berkas diganti

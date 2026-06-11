@@ -22,7 +22,16 @@ class DocumentAccessController extends Controller
     {
         $this->authorizeAccess($request, 'download', $document);
 
-        abort_unless(Storage::disk('documents')->exists($document->file_path), 404);
+        // Dokumen di penyimpanan eksternal (mis. Google Drive) — alihkan
+        // setelah cek policy; unduhan tetap tercatat
+        if ($document->isExternal()) {
+            $document->increment('download_count');
+            $this->activityLogger->log(ActivityLog::ACTION_DOWNLOAD, $document, $request);
+
+            return redirect()->away($document->external_url);
+        }
+
+        abort_unless($document->file_path && Storage::disk('documents')->exists($document->file_path), 404);
 
         $document->increment('download_count');
         $this->activityLogger->log(ActivityLog::ACTION_DOWNLOAD, $document, $request);
@@ -37,7 +46,14 @@ class DocumentAccessController extends Controller
     {
         $this->authorizeAccess($request, 'view', $document);
 
-        abort_unless(Storage::disk('documents')->exists($document->file_path), 404);
+        if ($document->isExternal()) {
+            $document->increment('view_count');
+            $this->activityLogger->log(ActivityLog::ACTION_VIEW, $document, $request);
+
+            return redirect()->away($document->external_url);
+        }
+
+        abort_unless($document->file_path && Storage::disk('documents')->exists($document->file_path), 404);
 
         $document->increment('view_count');
         $this->activityLogger->log(ActivityLog::ACTION_VIEW, $document, $request);

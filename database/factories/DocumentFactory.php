@@ -40,6 +40,17 @@ class DocumentFactory extends Factory
         return $this->state(fn (array $attributes) => ['visibility' => $visibility]);
     }
 
+    public function external(string $url = 'https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUv/view'): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'external_url' => $url,
+            'file_path' => null,
+            'file_name' => null,
+            'file_size' => null,
+            'mime_type' => null,
+        ]);
+    }
+
     public function draft(): static
     {
         return $this->state(fn (array $attributes) => ['status' => Document::STATUS_DRAFT]);

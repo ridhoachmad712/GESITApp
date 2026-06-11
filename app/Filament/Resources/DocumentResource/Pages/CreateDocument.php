@@ -15,8 +15,26 @@ class CreateDocument extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['uploaded_by'] = auth()->id();
+        $data = self::normalizeSource($data);
 
         return $this->fillFileMetadata($data);
+    }
+
+    /**
+     * Dokumen bersumber tunggal: tautan eksternal ATAU file unggahan.
+     */
+    public static function normalizeSource(array $data): array
+    {
+        if (filled($data['external_url'] ?? null)) {
+            $data['file_path'] = null;
+            $data['file_name'] = null;
+            $data['file_size'] = null;
+            $data['mime_type'] = null;
+        } else {
+            $data['external_url'] = null;
+        }
+
+        return $data;
     }
 
     protected function afterCreate(): void

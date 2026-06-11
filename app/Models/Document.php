@@ -51,6 +51,7 @@ class Document extends Model
         'file_name',
         'file_size',
         'mime_type',
+        'external_url',
         'visibility',
         'academic_year',
         'semester',
@@ -91,6 +92,38 @@ class Document extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * Dokumen yang tersimpan di penyimpanan eksternal (mis. Google Drive),
+     * bukan file di disk server.
+     */
+    public function isExternal(): bool
+    {
+        return filled($this->external_url);
+    }
+
+    /**
+     * URL embed preview Google Drive, atau null bila bukan tautan Drive.
+     */
+    public function googleDriveEmbedUrl(): ?string
+    {
+        if (! $this->isExternal()) {
+            return null;
+        }
+
+        if (preg_match('#https://(drive|docs)\.google\.com/(?:file/d/|document/d/|spreadsheets/d/|presentation/d/)([\w-]+)#', $this->external_url, $matches)) {
+            $base = match (true) {
+                str_contains($this->external_url, '/document/d/') => 'https://docs.google.com/document/d/',
+                str_contains($this->external_url, '/spreadsheets/d/') => 'https://docs.google.com/spreadsheets/d/',
+                str_contains($this->external_url, '/presentation/d/') => 'https://docs.google.com/presentation/d/',
+                default => 'https://drive.google.com/file/d/',
+            };
+
+            return $base.$matches[2].'/preview';
+        }
+
+        return null;
     }
 
     public function scopePublished(Builder $query): Builder

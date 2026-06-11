@@ -105,6 +105,18 @@ class DocumentResource extends Resource
 
                 Forms\Components\Section::make('Berkas')
                     ->schema([
+                        Forms\Components\Radio::make('sumber')
+                            ->label('Sumber dokumen')
+                            ->options([
+                                'file' => 'Unggah file ke server',
+                                'tautan' => 'Tautan eksternal (Google Drive, OneDrive, dsb.) — hemat penyimpanan server',
+                            ])
+                            ->default('file')
+                            ->live()
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function (Forms\Components\Radio $component, ?Document $record): void {
+                                $component->state($record?->isExternal() ? 'tautan' : 'file');
+                            }),
                         Forms\Components\FileUpload::make('file_path')
                             ->label('Berkas dokumen')
                             ->disk('documents')
@@ -116,9 +128,19 @@ class DocumentResource extends Resource
                             )
                             ->acceptedFileTypes(self::ALLOWED_MIME_TYPES)
                             ->maxSize(51200) // 50 MB
-                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->visible(fn (Get $get): bool => $get('sumber') === 'file')
+                            ->required(fn (string $operation, Get $get): bool => $operation === 'create' && $get('sumber') === 'file')
                             ->storeFileNamesIn('file_name')
                             ->helperText('Format: PDF, DOCX, XLSX, PPTX, JPG, PNG. Maksimal 50 MB.')
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('external_url')
+                            ->label('Tautan dokumen')
+                            ->url()
+                            ->maxLength(2048)
+                            ->placeholder('https://drive.google.com/file/d/…/view')
+                            ->visible(fn (Get $get): bool => $get('sumber') === 'tautan')
+                            ->required(fn (Get $get): bool => $get('sumber') === 'tautan')
+                            ->helperText('PENTING: atur berbagi tautan di Google Drive ke "Siapa saja yang memiliki link". Kontrol akses GESIT hanya membatasi siapa yang mendapat tautannya — file di Drive mengikuti pengaturan berbagi Drive itu sendiri.')
                             ->columnSpanFull(),
                     ]),
 
@@ -193,6 +215,12 @@ class DocumentResource extends Resource
                     ->label('Tahun Akademik')
                     ->sortable()
                     ->toggleable(),
+                Tables\Columns\TextColumn::make('sumber')
+                    ->label('Sumber')
+                    ->state(fn (Document $record): string => $record->isExternal() ? 'Tautan' : 'File')
+                    ->badge()
+                    ->color(fn (string $state): string => $state === 'Tautan' ? 'info' : 'gray')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('file_size')
                     ->label('Ukuran')
                     ->formatStateUsing(fn (?int $state): string => $state ? Number::fileSize($state) : '—')
@@ -255,6 +283,11 @@ class DocumentResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
+                Tables\Actions\Action::make('lihat')
+                    ->label('Lihat')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Document $record): string => route('documents.preview', $record))
+                    ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class Category extends Model
 {
@@ -49,5 +50,26 @@ class Category extends Model
     public function scopeRoot(Builder $query): Builder
     {
         return $query->whereNull('parent_id')->orderBy('sort_order');
+    }
+
+    /**
+     * Kategori utama beserta jumlah dokumen terbit yang boleh dilihat
+     * $user (termasuk dokumen di sub-kategorinya), pada atribut
+     * `visible_documents_count`.
+     */
+    public static function rootsWithVisibleDocumentCounts(?User $user): Collection
+    {
+        $counts = Document::published()->visibleTo($user)
+            ->selectRaw('category_id, COUNT(*) as aggregate')
+            ->groupBy('category_id')
+            ->pluck('aggregate', 'category_id');
+
+        return static::with('children')->root()->get()
+            ->map(function (Category $category) use ($counts): Category {
+                $category->visible_documents_count = ($counts[$category->id] ?? 0)
+                    + $category->children->sum(fn (Category $child): int => $counts[$child->id] ?? 0);
+
+                return $category;
+            });
     }
 }

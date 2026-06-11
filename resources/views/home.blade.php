@@ -88,7 +88,7 @@
                             <p class="mt-1 line-clamp-2 text-sm text-gray-600">{{ $category->description }}</p>
                         @endif
                         <p class="mt-2 text-xs font-medium text-unm-600">
-                            {{ number_format($category->public_documents_count, 0, ',', '.') }} dokumen publik
+                            {{ number_format($category->visible_documents_count, 0, ',', '.') }} dokumen publik
                         </p>
                     </div>
                 </div>

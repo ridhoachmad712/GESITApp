@@ -9,7 +9,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class ExpiringAgreements extends BaseWidget
 {
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 6;
 
     protected static ?string $heading = 'MoU/MoA Akan Kedaluwarsa (< 90 hari)';
 

@@ -9,7 +9,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class EmptyCategories extends BaseWidget
 {
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 7;
 
     protected static bool $isLazy = false;
 

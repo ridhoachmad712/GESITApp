@@ -14,12 +14,23 @@
 
         <form action="{{ route('cari') }}" method="GET"
               class="mt-6 flex max-w-xl overflow-hidden rounded-xl border border-gray-300 bg-white shadow-sm focus-within:border-unm-500">
+            @if ($categoryFilter)
+                <input type="hidden" name="kategori" value="{{ $categoryFilter->slug }}">
+            @endif
             <input type="search" name="q" value="{{ $query }}" placeholder="Cari judul atau deskripsi dokumen…"
                    class="w-full border-0 px-5 py-3 text-gray-900 placeholder-gray-400 focus:ring-0" autofocus>
             <button type="submit" class="bg-unm-500 px-6 text-sm font-semibold text-white transition hover:bg-unm-600">
                 Cari
             </button>
         </form>
+
+        @if ($categoryFilter)
+            <p class="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                Dibatasi kategori:
+                <span class="rounded-full bg-unm-50 px-3 py-1 text-xs font-medium text-unm-700">{{ $categoryFilter->name }}</span>
+                <a href="{{ route('cari', array_filter(['q' => $query])) }}" class="text-unm-600 hover:underline">Cari di semua kategori</a>
+            </p>
+        @endif
 
         @if ($query === '')
             <p class="mt-8 text-sm text-gray-500">Masukkan kata kunci untuk mencari dokumen.</p>

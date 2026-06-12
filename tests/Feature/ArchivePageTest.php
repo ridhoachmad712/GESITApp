@@ -21,7 +21,7 @@ class ArchivePageTest extends TestCase
             ->assertSee('Arsip Akademik Uji');
     }
 
-    public function test_category_page_shows_documents_including_subcategories(): void
+    public function test_show_all_lists_documents_including_subcategories(): void
     {
         $parent = Category::factory()->create(['name' => 'Induk Uji']);
         $child = Category::factory()->create(['parent_id' => $parent->id]);
@@ -29,7 +29,8 @@ class ArchivePageTest extends TestCase
         Document::factory()->create(['category_id' => $parent->id, 'title' => 'Dokumen Induk Langsung']);
         Document::factory()->create(['category_id' => $child->id, 'title' => 'Dokumen Anak Kategori']);
 
-        $this->get(route('arsip.show', $parent))
+        // Kategori utama ber-sub menampilkan hub; daftar lengkap lewat ?semua=1
+        $this->get(route('arsip.show', ['category' => $parent, 'semua' => 1]))
             ->assertOk()
             ->assertSee('Dokumen Induk Langsung')
             ->assertSee('Dokumen Anak Kategori');

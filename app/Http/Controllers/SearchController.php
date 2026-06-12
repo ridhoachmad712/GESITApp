@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -10,16 +11,27 @@ class SearchController extends Controller
 {
     /**
      * Pencarian FULLTEXT pada judul + deskripsi.
-     * Hasil mengikuti visibility pengunjung (publik/mahasiswa/dosen/admin).
+     * Hasil mengikuti visibility pengunjung; opsional dibatasi
+     * satu kategori (termasuk sub-kategorinya) via ?kategori={slug}.
      */
     public function index(Request $request): View
     {
         $query = trim((string) $request->query('q', ''));
         $documents = null;
 
+        $categoryFilter = $request->filled('kategori')
+            ? Category::with('children')->where('slug', $request->string('kategori'))->first()
+            : null;
+
         if ($query !== '') {
             $base = Document::published()
                 ->visibleTo($request->user())
+                ->when($categoryFilter, function ($builder) use ($categoryFilter): void {
+                    $builder->whereIn('category_id', [
+                        $categoryFilter->id,
+                        ...$categoryFilter->children->pluck('id')->all(),
+                    ]);
+                })
                 ->with('category');
 
             // Kata < 3 huruf tidak terindeks FULLTEXT InnoDB — pakai LIKE
@@ -37,6 +49,7 @@ class SearchController extends Controller
         return view('cari', [
             'query' => $query,
             'documents' => $documents,
+            'categoryFilter' => $categoryFilter,
         ]);
     }
 }

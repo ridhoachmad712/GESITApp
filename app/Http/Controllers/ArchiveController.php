@@ -20,12 +20,19 @@ class ArchiveController extends Controller
     }
 
     /**
-     * Dokumen dalam satu kategori (termasuk sub-kategorinya),
-     * dengan filter tahun akademik dan pagination.
+     * Kategori utama dengan sub-kategori → hub pemilihan sub dulu
+     * (agar pengunjung tidak ditumpahi semua dokumen sekaligus).
+     * Sub-kategori, kategori tanpa sub, atau ?semua=1 → daftar dokumen.
      */
     public function show(Request $request, Category $category): View
     {
-        $categoryIds = [$category->id, ...$category->children()->pluck('id')->all()];
+        $category->load(['children', 'parent']);
+
+        if ($category->children->isNotEmpty() && ! $request->boolean('semua')) {
+            return $this->hub($request, $category);
+        }
+
+        $categoryIds = [$category->id, ...$category->children->pluck('id')->all()];
 
         $base = Document::published()
             ->visibleTo($request->user())
@@ -48,11 +55,34 @@ class ArchiveController extends Controller
             ->withQueryString();
 
         return view('arsip.show', [
-            'category' => $category->load(['children', 'parent']),
+            'category' => $category,
             'documents' => $documents,
             'years' => $years,
             'selectedYear' => (string) $request->string('tahun'),
             'viewMode' => $request->query('tampilan') === 'list' ? 'list' : 'grid',
+            'showAll' => $request->boolean('semua'),
+        ]);
+    }
+
+    /**
+     * Hub sub-kategori: jumlah dokumen & pembaruan terakhir per sub
+     * (sesuai hak akses pengunjung), pencarian terbatas kategori,
+     * dan jalan pintas melihat semua dokumen.
+     */
+    private function hub(Request $request, Category $category): View
+    {
+        $stats = Document::published()
+            ->visibleTo($request->user())
+            ->whereIn('category_id', $category->children->pluck('id')->push($category->id))
+            ->selectRaw('category_id, COUNT(*) as aggregate, MAX(created_at) as latest')
+            ->groupBy('category_id')
+            ->get()
+            ->keyBy('category_id');
+
+        return view('arsip.hub', [
+            'category' => $category,
+            'stats' => $stats,
+            'totalDocuments' => (int) $stats->sum('aggregate'),
         ]);
     }
 }

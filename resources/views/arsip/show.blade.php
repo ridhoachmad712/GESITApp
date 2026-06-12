@@ -23,6 +23,12 @@
 
         {{-- Sub-kategori --}}
         @if ($category->children->isNotEmpty())
+            @if ($showAll ?? false)
+                <a href="{{ route('arsip.show', $category) }}"
+                   class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-unm-600 hover:text-unm-700">
+                    ← Kembali ke pilihan sub-kategori
+                </a>
+            @endif
             <div class="mt-5 flex flex-wrap gap-2">
                 @foreach ($category->children as $child)
                     <a href="{{ route('arsip.show', $child) }}"
@@ -39,6 +45,9 @@
                 <form method="GET" class="flex flex-wrap items-center gap-3">
                     @if ($viewMode === 'list')
                         <input type="hidden" name="tampilan" value="list">
+                    @endif
+                    @if ($showAll ?? false)
+                        <input type="hidden" name="semua" value="1">
                     @endif
                     <label for="tahun" class="text-sm font-medium text-gray-700">Tahun akademik:</label>
                     <select id="tahun" name="tahun" onchange="this.form.submit()"

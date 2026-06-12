@@ -50,6 +50,7 @@ class HomepageContent extends Page implements HasForms
         'section_latest_order',
         'nav_beranda_order',
         'nav_arsip_order',
+        'nav_dokumentasi_order',
         'nav_cari_order',
         'footer_contact_line1',
         'footer_contact_line2',
@@ -169,12 +170,16 @@ class HomepageContent extends Page implements HasForms
                             ->label('Arsip')
                             ->numeric()
                             ->required(),
+                        Forms\Components\TextInput::make('nav_dokumentasi_order')
+                            ->label('Dokumentasi')
+                            ->numeric()
+                            ->required(),
                         Forms\Components\TextInput::make('nav_cari_order')
                             ->label('Pencarian')
                             ->numeric()
                             ->required(),
                     ])
-                    ->columns(3),
+                    ->columns(4),
 
                 Forms\Components\Section::make('Footer — Kontak')
                     ->schema([

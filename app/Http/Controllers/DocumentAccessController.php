@@ -62,6 +62,28 @@ class DocumentAccessController extends Controller
     }
 
     /**
+     * Gambar untuk galeri dokumentasi: HANYA dokumen gambar
+     * public+published, tanpa counter/log (galeri memuat banyak
+     * gambar sekaligus — mencatat tiap thumbnail = spam log),
+     * dengan header cache agar ringan.
+     */
+    public function image(Document $document): Response
+    {
+        abort_unless(
+            $document->status === Document::STATUS_PUBLISHED
+            && $document->visibility === Document::VISIBILITY_PUBLIC
+            && str_starts_with((string) $document->mime_type, 'image/')
+            && $document->file_path
+            && Storage::disk('documents')->exists($document->file_path),
+            404,
+        );
+
+        return Storage::disk('documents')->response($document->file_path, $document->file_name, [
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
+    }
+
+    /**
      * Pengunjung tanpa login diarahkan ke halaman login;
      * user login tanpa hak mendapat 403.
      */

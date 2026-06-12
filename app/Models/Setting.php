@@ -54,7 +54,8 @@ class Setting extends Model
 
         'nav_beranda_order' => '1',
         'nav_arsip_order' => '2',
-        'nav_cari_order' => '3',
+        'nav_dokumentasi_order' => '3',
+        'nav_cari_order' => '4',
 
         'footer_contact_line1' => 'Kampus UNM Gunung Sari',
         'footer_contact_line2' => 'Jl. A. P. Pettarani, Makassar, Sulawesi Selatan',

@@ -13,6 +13,7 @@
         $navLinks = collect([
             ['label' => 'Beranda', 'href' => route('home'), 'active' => request()->routeIs('home'), 'order' => (int) \App\Models\Setting::get('nav_beranda_order')],
             ['label' => 'Arsip', 'href' => route('arsip.index'), 'active' => request()->routeIs('arsip.*'), 'order' => (int) \App\Models\Setting::get('nav_arsip_order')],
+            ['label' => 'Dokumentasi', 'href' => route('dokumentasi.index'), 'active' => request()->routeIs('dokumentasi.*'), 'order' => (int) \App\Models\Setting::get('nav_dokumentasi_order')],
             ['label' => 'Pencarian', 'href' => route('cari'), 'active' => request()->routeIs('cari'), 'order' => (int) \App\Models\Setting::get('nav_cari_order')],
         ])->sortBy('order')->values();
     @endphp

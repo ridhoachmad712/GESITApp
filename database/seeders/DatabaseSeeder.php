@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             AdminUserSeeder::class,
             SettingSeeder::class,
+            AccreditationCriteriaSeeder::class,
         ]);
     }
 }

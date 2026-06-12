@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\BundelAkreditasiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentAccessController;
 use App\Http\Controllers\DocumentController;
@@ -41,6 +42,11 @@ Route::get('/dokumen/{document:slug}/gambar', [DocumentAccessController::class, 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware('auth')
     ->name('dashboard');
+
+// Bundel Akreditasi — bukti per kriteria LAMEMBA, khusus dosen & admin
+Route::get('/bundel-akreditasi', [BundelAkreditasiController::class, 'index'])
+    ->middleware(['auth', 'role:admin,dosen'])
+    ->name('bundel.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

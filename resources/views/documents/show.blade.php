@@ -183,6 +183,19 @@
                             <dt class="font-medium text-gray-500">Diunggah</dt>
                             <dd class="mt-1 text-gray-900">{{ $document->created_at->translatedFormat('d F Y') }}</dd>
                         </div>
+                        @if ($document->criteria->isNotEmpty())
+                            <div class="border-t border-gray-100 pt-4">
+                                <dt class="font-medium text-gray-500">Bukti kriteria akreditasi</dt>
+                                <dd class="mt-2 flex flex-wrap gap-1.5">
+                                    @foreach ($document->criteria as $criterion)
+                                        <span class="rounded-full bg-unm-50 px-2.5 py-1 text-xs font-semibold text-unm-700"
+                                              title="{{ $criterion->name }}">
+                                            {{ $criterion->code }}
+                                        </span>
+                                    @endforeach
+                                </dd>
+                            </div>
+                        @endif
                     </dl>
                 </div>
 

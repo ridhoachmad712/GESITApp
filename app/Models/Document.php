@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
@@ -100,6 +101,14 @@ class Document extends Model
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);
+    }
+
+    /**
+     * Kriteria akreditasi yang dibuktikan dokumen ini (F3.3).
+     */
+    public function criteria(): BelongsToMany
+    {
+        return $this->belongsToMany(AccreditationCriterion::class, 'document_criteria', 'document_id', 'criteria_id');
     }
 
     public function getRouteKeyName(): string

@@ -18,6 +18,11 @@
                     <x-nav-link :href="route('home')" :active="false">
                         Beranda
                     </x-nav-link>
+                    @unless (auth()->user()->isMahasiswa())
+                        <x-nav-link :href="route('bundel.index')" :active="request()->routeIs('bundel.*')">
+                            Bundel Akreditasi
+                        </x-nav-link>
+                    @endunless
                 </div>
             </div>
 
@@ -76,6 +81,11 @@
             <x-responsive-nav-link :href="route('home')" :active="false">
                 Beranda
             </x-responsive-nav-link>
+            @unless (auth()->user()->isMahasiswa())
+                <x-responsive-nav-link :href="route('bundel.index')" :active="request()->routeIs('bundel.*')">
+                    Bundel Akreditasi
+                </x-responsive-nav-link>
+            @endunless
         </div>
 
         <!-- Responsive Settings Options -->

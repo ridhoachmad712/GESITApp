@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DocumentResource\Pages;
+use App\Models\AccreditationCriterion;
 use App\Models\Category;
 use App\Models\Document;
 use Filament\Forms;
@@ -188,6 +189,14 @@ class DocumentResource extends Resource
                         Forms\Components\DatePicker::make('expires_at')
                             ->label('Tanggal kedaluwarsa')
                             ->helperText('Untuk MoU/MoA — akan muncul peringatan 90 hari sebelum kedaluwarsa.'),
+                        Forms\Components\Select::make('criteria')
+                            ->label('Kriteria akreditasi')
+                            ->relationship('criteria', 'name')
+                            ->getOptionLabelFromRecordUsing(fn (AccreditationCriterion $record): string => $record->full_label)
+                            ->multiple()
+                            ->preload()
+                            ->helperText('Tandai dokumen ini sebagai bukti kriteria LAMEMBA tertentu — tampil di Bundel Akreditasi.')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->collapsible(),
@@ -292,6 +301,10 @@ class DocumentResource extends Resource
                         Document::VISIBILITY_MAHASISWA => 'Mahasiswa',
                         Document::VISIBILITY_INTERNAL => 'Internal',
                     ]),
+                Tables\Filters\SelectFilter::make('criteria')
+                    ->label('Kriteria akreditasi')
+                    ->relationship('criteria', 'code')
+                    ->preload(),
                 Tables\Filters\SelectFilter::make('academic_year')
                     ->label('Tahun Akademik')
                     ->options(

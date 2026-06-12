@@ -33,7 +33,7 @@ class DocumentController extends Controller
             ->get();
 
         return view('documents.show', [
-            'document' => $document->load(['category.parent', 'uploader']),
+            'document' => $document->load(['category.parent', 'uploader', 'criteria']),
             'relatedDocuments' => $relatedDocuments,
         ]);
     }

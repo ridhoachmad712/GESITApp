@@ -23,4 +23,16 @@ class AdminStatsTest extends TestCase
             ->assertSee('Dokumen Terpopuler')
             ->assertSee('Panduan Paling Laris');
     }
+
+    public function test_dashboard_shows_pending_drafts(): void
+    {
+        Document::factory()->draft()->create(['title' => 'Draf Terlupakan Lama']);
+
+        $this->actingAs(User::factory()->admin()->create());
+
+        $this->get('/admin')
+            ->assertOk()
+            ->assertSee('Draf Menunggu Diterbitkan')
+            ->assertSee('Draf Terlupakan Lama');
+    }
 }

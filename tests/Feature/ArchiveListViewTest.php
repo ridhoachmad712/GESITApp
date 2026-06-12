@@ -11,7 +11,7 @@ class ArchiveListViewTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_category_page_defaults_to_grid_and_can_switch_to_list(): void
+    public function test_category_page_defaults_to_list_and_can_switch_to_grid(): void
     {
         $category = Category::factory()->create();
         Document::factory()->create([
@@ -19,22 +19,22 @@ class ArchiveListViewTest extends TestCase
             'title' => 'Dokumen Uji Tampilan',
         ]);
 
-        // Default: tampilan kartu, ada tombol toggle
+        // Default: tampilan daftar (baris dalam kontainer divide-y)
         $this->get(route('arsip.show', $category))
             ->assertOk()
             ->assertSee('Dokumen Uji Tampilan')
+            ->assertSee('divide-y', false)
             ->assertSee('Kartu')
             ->assertSee('Daftar');
 
-        // Mode list tetap menampilkan dokumen + aksi Lihat/Unduh
-        $this->get(route('arsip.show', ['category' => $category, 'tampilan' => 'list']))
+        // Mode kartu via ?tampilan=grid
+        $this->get(route('arsip.show', ['category' => $category, 'tampilan' => 'grid']))
             ->assertOk()
             ->assertSee('Dokumen Uji Tampilan')
-            ->assertSee('Lihat')
-            ->assertSee('Unduh');
+            ->assertDontSee('divide-y', false);
     }
 
-    public function test_year_filter_preserves_list_mode(): void
+    public function test_year_filter_preserves_grid_mode(): void
     {
         $category = Category::factory()->create();
         Document::factory()->create([
@@ -42,13 +42,12 @@ class ArchiveListViewTest extends TestCase
             'academic_year' => '2025/2026',
         ]);
 
-        $response = $this->get(route('arsip.show', [
+        // Form filter menyertakan hidden input tampilan=grid saat mode kartu
+        $this->get(route('arsip.show', [
             'category' => $category,
-            'tampilan' => 'list',
-        ]));
-
-        // Form filter menyertakan hidden input tampilan=list
-        $response->assertOk()
-            ->assertSee('name="tampilan" value="list"', false);
+            'tampilan' => 'grid',
+        ]))
+            ->assertOk()
+            ->assertSee('name="tampilan" value="grid"', false);
     }
 }

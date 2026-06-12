@@ -59,7 +59,8 @@ class ArchiveController extends Controller
             'documents' => $documents,
             'years' => $years,
             'selectedYear' => (string) $request->string('tahun'),
-            'viewMode' => $request->query('tampilan') === 'list' ? 'list' : 'grid',
+            // Default tampilan: daftar; kartu via ?tampilan=grid
+            'viewMode' => $request->query('tampilan') === 'grid' ? 'grid' : 'list',
             'showAll' => $request->boolean('semua'),
         ]);
     }

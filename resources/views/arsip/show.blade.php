@@ -43,8 +43,8 @@
         <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
             @if ($years->isNotEmpty())
                 <form method="GET" class="flex flex-wrap items-center gap-3">
-                    @if ($viewMode === 'list')
-                        <input type="hidden" name="tampilan" value="list">
+                    @if ($viewMode === 'grid')
+                        <input type="hidden" name="tampilan" value="grid">
                     @endif
                     @if ($showAll ?? false)
                         <input type="hidden" name="semua" value="1">
@@ -68,16 +68,16 @@
             {{-- Toggle grid / list --}}
             <div class="inline-flex overflow-hidden rounded-lg border border-gray-300 bg-white" role="group" aria-label="Pilihan tampilan">
                 <a href="{{ request()->fullUrlWithQuery(['tampilan' => null]) }}"
-                   title="Tampilan kartu"
-                   class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition {{ $viewMode === 'grid' ? 'bg-unm-500 text-white' : 'text-gray-600 hover:bg-gray-50' }}">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
-                    Kartu
-                </a>
-                <a href="{{ request()->fullUrlWithQuery(['tampilan' => 'list']) }}"
                    title="Tampilan daftar"
-                   class="flex items-center gap-1.5 border-l border-gray-300 px-3 py-2 text-sm font-medium transition {{ $viewMode === 'list' ? 'bg-unm-500 text-white' : 'text-gray-600 hover:bg-gray-50' }}">
+                   class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition {{ $viewMode === 'list' ? 'bg-unm-500 text-white' : 'text-gray-600 hover:bg-gray-50' }}">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
                     Daftar
+                </a>
+                <a href="{{ request()->fullUrlWithQuery(['tampilan' => 'grid']) }}"
+                   title="Tampilan kartu"
+                   class="flex items-center gap-1.5 border-l border-gray-300 px-3 py-2 text-sm font-medium transition {{ $viewMode === 'grid' ? 'bg-unm-500 text-white' : 'text-gray-600 hover:bg-gray-50' }}">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+                    Kartu
                 </a>
             </div>
         </div>

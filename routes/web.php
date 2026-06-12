@@ -16,6 +16,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/arsip', [ArchiveController::class, 'index'])->name('arsip.index');
 Route::get('/arsip/{category:slug}', [ArchiveController::class, 'show'])->name('arsip.show');
 Route::get('/cari', [SearchController::class, 'index'])->name('cari');
+Route::get('/cari/saran', [SearchController::class, 'suggest'])
+    ->middleware('throttle:60,1')
+    ->name('cari.saran');
 
 // Akses dokumen — detail, unduh, dan preview file dari storage privat.
 Route::get('/dokumen/{document:slug}', [DocumentController::class, 'show'])

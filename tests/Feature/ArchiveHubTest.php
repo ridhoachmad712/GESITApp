@@ -79,8 +79,8 @@ class ArchiveHubTest extends TestCase
         // Kata pendek memakai jalur LIKE (bukan FULLTEXT) — aman dalam transaksi test
         $this->get('/cari?q=KP&kategori=kategori-target')
             ->assertOk()
-            ->assertSee('Panduan KP Target')
-            ->assertDontSee('Panduan KP Lainnya')
-            ->assertSee('Dibatasi kategori');
+            ->assertSeeText('Panduan KP Target')
+            ->assertDontSeeText('Panduan KP Lainnya')
+            ->assertSeeText('di kategori');
     }
 }

@@ -33,6 +33,9 @@ class HomepageContent extends Page implements HasForms
         'hero_search_placeholder',
         'login_banner_text',
         'login_banner_button',
+        'announcement_text',
+        'announcement_link_label',
+        'announcement_link_url',
         'section_featured_title',
         'section_featured_subtitle',
         'section_featured_order',
@@ -56,6 +59,7 @@ class HomepageContent extends Page implements HasForms
 
     /** Key bertipe boolean (toggle), disimpan '1'/'0'. */
     private const TOGGLE_KEYS = [
+        'announcement_enabled',
         'login_banner_enabled',
         'section_featured_visible',
         'section_categories_visible',
@@ -110,6 +114,25 @@ class HomepageContent extends Page implements HasForms
                             ->helperText('Tampil di bawah kotak pencarian; klik = langsung mencari. Kosongkan semua untuk menyembunyikan.'),
                     ])
                     ->columns(1),
+
+                Forms\Components\Section::make('Bar Pengumuman')
+                    ->description('Strip tipis di paling atas SEMUA halaman publik — untuk info musiman (pengisian KRS, jadwal maintenance, dsb.).')
+                    ->schema([
+                        Forms\Components\Toggle::make('announcement_enabled')
+                            ->label('Tampilkan pengumuman'),
+                        Forms\Components\TextInput::make('announcement_text')
+                            ->label('Teks pengumuman')
+                            ->maxLength(160)
+                            ->requiredIfAccepted('announcement_enabled'),
+                        Forms\Components\TextInput::make('announcement_link_label')
+                            ->label('Label tautan (opsional)')
+                            ->maxLength(40),
+                        Forms\Components\TextInput::make('announcement_link_url')
+                            ->label('URL tautan (opsional)')
+                            ->url()
+                            ->maxLength(255),
+                    ])
+                    ->columns(2),
 
                 Forms\Components\Section::make('Banner Ajakan Masuk')
                     ->schema([

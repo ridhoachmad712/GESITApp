@@ -26,6 +26,11 @@ class Setting extends Model
         'hero_search_placeholder' => 'Cari judul dokumen…',
         'hero_search_chips' => '["Kurikulum","RPS","Panduan Akademik","Akreditasi","MBKM"]',
 
+        'announcement_enabled' => '0',
+        'announcement_text' => '',
+        'announcement_link_label' => '',
+        'announcement_link_url' => '',
+
         'login_banner_enabled' => '1',
         'login_banner_text' => 'Mahasiswa atau dosen prodi? Masuk untuk mengakses RPS, modul, dan dokumen internal yang tidak ditampilkan untuk publik.',
         'login_banner_button' => 'Masuk',

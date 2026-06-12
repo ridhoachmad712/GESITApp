@@ -27,6 +27,19 @@
 </head>
 <body class="min-h-screen bg-gray-50 font-sans text-gray-900 antialiased">
 
+    {{-- Bar pengumuman (diatur dari admin → Konten Beranda) --}}
+    @if (\App\Models\Setting::get('announcement_enabled') === '1' && filled(\App\Models\Setting::get('announcement_text')))
+        <div class="bg-unm-900 px-4 py-2 text-center text-sm text-unm-50">
+            {{ \App\Models\Setting::get('announcement_text') }}
+            @if (filled(\App\Models\Setting::get('announcement_link_url')))
+                <a href="{{ \App\Models\Setting::get('announcement_link_url') }}"
+                   class="ml-1 font-semibold underline hover:text-white">
+                    {{ \App\Models\Setting::get('announcement_link_label') ?: 'Selengkapnya' }}
+                </a>
+            @endif
+        </div>
+    @endif
+
     {{-- Navbar --}}
     <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur" x-data="{ open: false }">
         <nav class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">

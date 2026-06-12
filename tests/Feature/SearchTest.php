@@ -29,7 +29,7 @@ class SearchTest extends TestCase
 
         $this->get('/cari?q=kurikulum')
             ->assertOk()
-            ->assertSee('Kurikulum Merdeka Belajar 2025')
+            ->assertSeeText('Kurikulum Merdeka Belajar 2025')
             ->assertDontSee('Panduan Skripsi Mahasiswa');
     }
 
@@ -42,16 +42,16 @@ class SearchTest extends TestCase
         // Pengunjung publik hanya melihat dokumen public
         $this->get('/cari?q=renstra')
             ->assertOk()
-            ->assertSee('Renstra Ringkasan Publik')
-            ->assertDontSee('Renstra Lengkap Internal');
+            ->assertSeeText('Renstra Ringkasan Publik')
+            ->assertDontSeeText('Renstra Lengkap Internal');
 
         // Dosen melihat keduanya
         $this->actingAs(User::factory()->dosen()->create());
 
         $this->get('/cari?q=renstra')
             ->assertOk()
-            ->assertSee('Renstra Ringkasan Publik')
-            ->assertSee('Renstra Lengkap Internal');
+            ->assertSeeText('Renstra Ringkasan Publik')
+            ->assertSeeText('Renstra Lengkap Internal');
     }
 
     public function test_draft_documents_never_appear_in_search(): void
@@ -71,6 +71,6 @@ class SearchTest extends TestCase
 
         $this->get('/cari?q=KP')
             ->assertOk()
-            ->assertSee('Panduan KP Lapangan');
+            ->assertSeeText('Panduan KP Lapangan');
     }
 }

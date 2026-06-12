@@ -31,10 +31,10 @@
                 </p>
 
                 @if (Route::has('cari'))
-                    <form action="{{ route('cari') }}" method="GET" class="mt-8 flex max-w-xl overflow-hidden rounded-xl bg-white shadow-lg">
-                        <input type="search" name="q" placeholder="{{ \App\Models\Setting::get('hero_search_placeholder') }}"
-                               class="w-full border-0 px-5 py-3.5 text-gray-900 placeholder-gray-400 focus:ring-0">
-                        <button type="submit" class="bg-unm-800 px-6 text-sm font-semibold text-white transition hover:bg-unm-900">
+                    <form action="{{ route('cari') }}" method="GET" class="mt-8 flex max-w-xl rounded-xl bg-white shadow-lg">
+                        <x-search-suggest :placeholder="\App\Models\Setting::get('hero_search_placeholder')"
+                                          input-class="w-full rounded-l-xl border-0 px-5 py-3.5 text-gray-900 placeholder-gray-400 focus:ring-0" />
+                        <button type="submit" class="rounded-r-xl bg-unm-800 px-6 text-sm font-semibold text-white transition hover:bg-unm-900">
                             Cari
                         </button>
                     </form>

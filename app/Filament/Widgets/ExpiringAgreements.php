@@ -13,7 +13,7 @@ class ExpiringAgreements extends BaseWidget
 
     protected static ?string $heading = 'MoU/MoA Akan Kedaluwarsa (< 90 hari)';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 1;
 
     public function table(Table $table): Table
     {

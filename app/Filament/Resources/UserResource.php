@@ -24,6 +24,16 @@ class UserResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Pengguna';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    /**
+     * @return array<string>
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email', 'identity_number'];
+    }
+
     /**
      * Badge jumlah user menunggu aktivasi (hasil registrasi mandiri).
      */

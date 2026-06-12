@@ -13,7 +13,7 @@ class LatestDocuments extends BaseWidget
 
     protected static ?string $heading = 'Dokumen Terbaru';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 1;
 
     public function table(Table $table): Table
     {

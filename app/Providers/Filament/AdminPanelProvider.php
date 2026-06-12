@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
+            ->profile()
             ->brandName(fn (): string => Setting::get('site_name').' — Panel Admin')
             ->brandLogo(fn (): ?string => Setting::get('logo_path')
                 ? Storage::disk('public')->url(Setting::get('logo_path'))

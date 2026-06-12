@@ -27,6 +27,8 @@ class CategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Kategori';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -98,6 +100,9 @@ class CategoryResource extends Resource
                     ->sortable(),
             ])
             ->defaultSort('sort_order')
+            // Geser baris (tombol panah di kanan atas tabel) untuk mengatur
+            // urutan — memengaruhi urutan beranda & menu kategori
+            ->reorderable('sort_order')
             ->filters([
                 Tables\Filters\SelectFilter::make('parent_id')
                     ->label('Kategori induk')

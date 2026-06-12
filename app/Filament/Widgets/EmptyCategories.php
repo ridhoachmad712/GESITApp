@@ -15,7 +15,7 @@ class EmptyCategories extends BaseWidget
 
     protected static ?string $heading = 'Kategori Tanpa Dokumen (Gap Analysis)';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 1;
 
     public function table(Table $table): Table
     {

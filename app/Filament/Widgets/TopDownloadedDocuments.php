@@ -15,7 +15,7 @@ class TopDownloadedDocuments extends BaseWidget
 
     protected static ?string $heading = 'Dokumen Terpopuler';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 1;
 
     public function table(Table $table): Table
     {

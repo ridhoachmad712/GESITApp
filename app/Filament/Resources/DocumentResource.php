@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
@@ -31,6 +32,33 @@ class DocumentResource extends Resource
     protected static ?string $modelLabel = 'Dokumen';
 
     protected static ?string $pluralModelLabel = 'Dokumen';
+
+    protected static ?string $recordTitleAttribute = 'title';
+
+    /**
+     * Pencarian global (topbar panel admin).
+     *
+     * @return array<string>
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'course_name', 'lecturer_name'];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Kategori' => $record->category?->name ?? '—',
+            'Status' => match ($record->status) {
+                Document::STATUS_PUBLISHED => 'Terbit',
+                Document::STATUS_ARCHIVED => 'Diarsipkan',
+                default => 'Draf',
+            },
+        ];
+    }
 
     /**
      * MIME yang diizinkan sesuai CLAUDE.md aturan 6:

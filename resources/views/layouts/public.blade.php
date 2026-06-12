@@ -19,6 +19,19 @@
     <title>@hasSection('title')@yield('title') — {{ $siteName }}@else{{ $siteName }} — {{ $siteTagline }}@endif</title>
     <meta name="description" content="@yield('meta_description', $siteName.' — '.$siteTagline.', arsip digital '.$siteOwner.'.')">
 
+    {{-- Open Graph & Twitter Card — tautan yang dibagikan tampil rapi --}}
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:title" content="@hasSection('title')@yield('title') — {{ $siteName }}@else{{ $siteName }} — {{ $siteTagline }}@endif">
+    <meta property="og:description" content="@yield('meta_description', $siteName.' — '.$siteTagline.', arsip digital '.$siteOwner.'.')">
+    <meta property="og:url" content="{{ url()->current() }}">
+    @if ($siteLogo)
+        <meta property="og:image" content="{{ Storage::disk('public')->url($siteLogo) }}">
+    @endif
+    <meta name="twitter:card" content="summary">
+
+    @stack('head')
+
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
@@ -26,6 +39,12 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-gray-50 font-sans text-gray-900 antialiased">
+
+    {{-- Aksesibilitas: lompat langsung ke konten utama --}}
+    <a href="#konten"
+       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-unm-700 focus:shadow-lg">
+        Lewati ke konten
+    </a>
 
     {{-- Bar pengumuman (diatur dari admin → Konten Beranda) --}}
     @if (\App\Models\Setting::get('announcement_enabled') === '1' && filled(\App\Models\Setting::get('announcement_text')))
@@ -100,9 +119,20 @@
     </header>
 
     {{-- Konten --}}
-    <main>
+    <main id="konten">
         @yield('content')
     </main>
+
+    {{-- Kembali ke atas --}}
+    <button type="button"
+            x-data="{ show: false }"
+            x-init="window.addEventListener('scroll', () => show = window.scrollY > 600, { passive: true })"
+            x-show="show" x-cloak
+            @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+            aria-label="Kembali ke atas"
+            class="fixed bottom-6 right-6 z-40 rounded-full bg-unm-500 p-3 text-white shadow-lg transition hover:bg-unm-600">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
+    </button>
 
     {{-- Footer --}}
     <footer class="mt-16 bg-gray-900 text-gray-300">

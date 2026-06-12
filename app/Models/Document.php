@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\HomeController;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class Document extends Model
@@ -30,8 +32,19 @@ class Document extends Model
 
     protected static function booted(): void
     {
+        // Bersihkan cache beranda saat dokumen berubah secara berarti
+        // (increment counter unduhan/lihat sengaja tidak ikut mem-bust)
+        static::saved(function (Document $document): void {
+            if ($document->wasRecentlyCreated || $document->wasChanged([
+                'title', 'slug', 'status', 'visibility', 'category_id', 'is_featured', 'deleted_at',
+            ])) {
+                Cache::forget(HomeController::CACHE_KEY);
+            }
+        });
+
         // CLAUDE.md aturan 4 — penghapusan (soft delete) dicatat ke activity_logs.
         static::deleted(function (Document $document): void {
+            Cache::forget(HomeController::CACHE_KEY);
             ActivityLog::create([
                 'user_id' => auth()->id(),
                 'document_id' => $document->isForceDeleting() ? null : $document->id,

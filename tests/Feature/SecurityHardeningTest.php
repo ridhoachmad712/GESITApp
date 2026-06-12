@@ -66,7 +66,9 @@ class SecurityHardeningTest extends TestCase
     {
         // File di disk privat `documents` (storage/app/documents) TIDAK boleh
         // terjangkau lewat symlink /storage (yang hanya memetakan storage/app/public).
-        Storage::disk('documents')->put('audit/rahasia-uji.pdf', 'rahasia');
+        // Penanda konten sengaja beda dari nama file: halaman error menggema URL
+        // permintaan (og:url), jadi nama file pasti muncul — isinya yang tidak boleh.
+        Storage::disk('documents')->put('audit/rahasia-uji.pdf', 'ISI-FILE-TERLARANG-XYZ');
 
         $probes = [
             '/storage/documents/audit/rahasia-uji.pdf',
@@ -81,7 +83,7 @@ class SecurityHardeningTest extends TestCase
                 // 404 (tidak ada route) atau 403 (route serve Laravel menolak
                 // tanpa signed URL) — yang penting konten tidak pernah bocor.
                 $this->assertGreaterThanOrEqual(400, $response->status(), "URL {$url} seharusnya ditolak");
-                $this->assertStringNotContainsString('rahasia', (string) $response->getContent(), "URL {$url} membocorkan isi file");
+                $this->assertStringNotContainsString('ISI-FILE-TERLARANG-XYZ', (string) $response->getContent(), "URL {$url} membocorkan isi file");
             }
 
             // Pastikan file memang ada secara fisik di luar webroot

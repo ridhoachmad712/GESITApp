@@ -1,5 +1,22 @@
 @extends('layouts.public')
 
+@push('head')
+    <script type="application/ld+json">
+        {!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => \App\Models\Setting::get('site_name'),
+            'alternateName' => \App\Models\Setting::get('site_tagline'),
+            'url' => route('home'),
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => route('cari').'?q={search_term_string}',
+                'query-input' => 'required name=search_term_string',
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+@endpush
+
 @section('content')
 
     {{-- Hero — foto latar + overlay warna dari Pengaturan Tampilan,

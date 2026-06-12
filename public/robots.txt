@@ -1,2 +1,6 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /profile
+
+Sitemap: https://gesit.manajemenunm.com/sitemap.xml
